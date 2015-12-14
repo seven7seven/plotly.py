@@ -10,7 +10,7 @@ import os
 import re
 from pkg_resources import resource_string
 
-import requests
+import http_requests
 import six
 
 from plotly import files, utils
@@ -89,10 +89,10 @@ def get_graph_reference():
                                                 GRAPH_REFERENCE_PATH, sha1)
 
     try:
-        response = requests.get(graph_reference_url,
+        response = http_requests.get(graph_reference_url,
                                 timeout=GRAPH_REFERENCE_DOWNLOAD_TIMEOUT)
         response.raise_for_status()
-    except requests.exceptions.RequestException:
+    except http_requests.exceptions.RequestException:
         if not graph_reference:
             path = os.path.join('graph_reference', 'default-schema.json')
             s = resource_string('plotly', path).decode('utf-8')

@@ -7,7 +7,7 @@ A module intended for use with Nose.
 """
 import random
 import string
-import requests
+import http_requests
 from unittest import TestCase
 
 from nose.plugins.attrib import attr
@@ -49,7 +49,7 @@ class FolderAPITestCase(TestCase):
         py.file_ops.mkdirs(first_folder)
         try:
             py.file_ops.mkdirs(first_folder)
-        except requests.exceptions.RequestException as e:
+        except http_requests.exceptions.RequestException as e:
             self.assertTrue(400 <= e.response.status_code < 500)
         else:
             self.fail('Expected this to fail!')

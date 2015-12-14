@@ -7,7 +7,7 @@ A module intended for use with Nose.
 """
 import copy
 import json
-import requests
+import http_requests
 
 import six
 from nose.plugins.attrib import attr
@@ -35,7 +35,7 @@ def test_user_does_not_exist():
     hd['plotly-username'] = username
     hd['plotly-apikey'] = api_key
     resource = "/apigetfile/{0}/{1}/".format(file_owner, file_id)
-    response = requests.get(server + resource, headers=hd)
+    response = http_requests.get(server + resource, headers=hd)
     if six.PY3:
         content = json.loads(response.content.decode('unicode_escape'))
     else:
@@ -58,7 +58,7 @@ def test_file_does_not_exist():
     hd['plotly-username'] = username
     hd['plotly-apikey'] = api_key
     resource = "/apigetfile/{0}/{1}/".format(file_owner, file_id)
-    response = requests.get(server + resource, headers=hd)
+    response = http_requests.get(server + resource, headers=hd)
     if six.PY3:
         content = json.loads(response.content.decode('unicode_escape'))
     else:
@@ -80,7 +80,7 @@ def test_wrong_api_key():  # TODO: does this test the right thing?
     hd['plotly-username'] = username
     hd['plotly-apikey'] = api_key
     resource = "/apigetfile/{0}/{1}/".format(file_owner, file_id)
-    response = requests.get(server + resource, headers=hd)
+    response = http_requests.get(server + resource, headers=hd)
     assert response.status_code == 401
     # TODO: check error message?
 
@@ -98,7 +98,7 @@ def test_private_permission_defined():
     hd['plotly-username'] = username
     hd['plotly-apikey'] = api_key
     resource = "/apigetfile/{0}/{1}/".format(file_owner, file_id)
-    response = requests.get(server + resource, headers=hd)
+    response = http_requests.get(server + resource, headers=hd)
     if six.PY3:
         content = json.loads(response.content.decode('unicode_escape'))
     else:
@@ -120,7 +120,7 @@ def test_missing_headers():
     for header in headers:
         hd = copy.copy(default_headers)
         del hd[header]
-        response = requests.get(server + resource, headers=hd)
+        response = http_requests.get(server + resource, headers=hd)
         if six.PY3:
             content = json.loads(response.content.decode('unicode_escape'))
         else:
@@ -140,7 +140,7 @@ def test_valid_request():
     hd['plotly-username'] = username
     hd['plotly-apikey'] = api_key
     resource = "/apigetfile/{0}/{1}/".format(file_owner, file_id)
-    response = requests.get(server + resource, headers=hd)
+    response = http_requests.get(server + resource, headers=hd)
     if six.PY3:
         content = json.loads(response.content.decode('unicode_escape'))
     else:

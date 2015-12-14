@@ -9,7 +9,7 @@ from __future__ import absolute_import
 
 import random
 import string
-import requests
+import http_requests
 
 from nose import with_setup
 from nose.plugins.attrib import attr
@@ -150,7 +150,7 @@ def test_scatter_from_non_uploaded_grid():
 
 
 @attr('slow')
-@raises(requests.exceptions.HTTPError)
+@raises(http_requests.exceptions.HTTPError)
 def test_column_append_of_non_uploaded_grid():
     c1 = Column([1, 2, 3, 4], 'first column')
     c2 = Column(['a', 'b', 'c', 'd'], 'second column')
@@ -159,7 +159,7 @@ def test_column_append_of_non_uploaded_grid():
 
 
 @attr('slow')
-@raises(requests.exceptions.HTTPError)
+@raises(http_requests.exceptions.HTTPError)
 def test_row_append_of_non_uploaded_grid():
     c1 = Column([1, 2, 3, 4], 'first column')
     rows = [[1], [2]]

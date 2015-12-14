@@ -8,7 +8,7 @@ A module intended for use with Nose.
 from __future__ import absolute_import
 
 import json
-import requests
+import http_requests
 import six
 
 from unittest import TestCase
@@ -184,7 +184,7 @@ class TestPlot(TestCase):
         # shareplot basically always gives a 200 if even if permission denied
         # embedplot returns an actual 404
         embed_url = plot_url.split('?')[0] + '.embed?' + plot_url.split('?')[1]
-        response = requests.get(embed_url)
+        response = http_requests.get(embed_url)
 
         self.assertEqual(response.status_code, 200)
 
@@ -201,7 +201,7 @@ class TestPlot(TestCase):
 
         private_plot_url = py._send_to_plotly(self.simple_figure,
                                               **kwargs)['url']
-        private_plot_response = requests.get(private_plot_url + ".json")
+        private_plot_response = http_requests.get(private_plot_url + ".json")
 
         # The json file of the private plot should be 404
         self.assertEqual(private_plot_response.status_code, 404)
@@ -210,7 +210,7 @@ class TestPlot(TestCase):
         urlsplit = six.moves.urllib.parse.urlparse(secret_plot_url)
         secret_plot_json_file = six.moves.urllib.parse.urljoin(
             urlsplit.geturl(), "?.json" + urlsplit.query)
-        secret_plot_response = requests.get(secret_plot_json_file)
+        secret_plot_response = http_requests.get(secret_plot_json_file)
 
         # The json file of the secret plot should be 200
         self.assertTrue(secret_plot_response.status_code, 200)

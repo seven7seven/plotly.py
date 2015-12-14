@@ -9,7 +9,7 @@ import os
 from pkg_resources import resource_string
 from unittest import TestCase
 
-import requests
+import http_requests
 import six
 from nose.plugins.attrib import attr
 
@@ -64,7 +64,7 @@ class TestGraphReferenceCaching(PlotlyTestCase):
         api_domain = files.FILE_CONTENT[files.CONFIG_FILE]['plotly_api_domain']
         graph_reference_url = '{}{}?sha1'.format(api_domain,
                                                  gr.GRAPH_REFERENCE_PATH)
-        response = requests.get(graph_reference_url)
+        response = http_requests.get(graph_reference_url)
         if six.PY3:
             content = str(response.content, encoding='utf-8')
         else:

@@ -1,4 +1,4 @@
-import requests
+import http_requests
 import json
 import warnings
 
@@ -15,7 +15,7 @@ def signup(un, email):
 	:email: <string> email address
 	'''
 	payload = {'version': __version__, 'un': un, 'email': email, 'platform':'Python'}
-	r = requests.post('https://plot.ly/apimkacct', data=payload)
+	r = http_requests.post('https://plot.ly/apimkacct', data=payload)
 	r.raise_for_status()
 	r = json.loads(r.text)
 	if 'error' in r and r['error'] != '':
@@ -221,7 +221,7 @@ class plotly:
 		kwargs = json.dumps(kwargs, cls=self.__plotlyJSONEncoder)
 		url = 'https://plot.ly/clientresp'
 		payload = {'platform': platform, 'version': __version__, 'args': args, 'un': un, 'key': key, 'origin': origin, 'kwargs': kwargs}
-		r = requests.post(url, data=payload)
+		r = http_requests.post(url, data=payload)
 		r.raise_for_status()
 		r = json.loads(r.text)
 		if 'error' in r and r['error'] != '':

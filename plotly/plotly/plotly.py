@@ -22,11 +22,11 @@ import json
 import os
 import warnings
 
-import requests
+import http_requests
 import six
 import six.moves
 
-from requests.auth import HTTPBasicAuth
+from http_requests.auth import HTTPBasicAuth
 
 from plotly import exceptions, tools, utils, version, files
 from plotly.plotly import chunked_requests
@@ -384,7 +384,7 @@ def get_figure(file_owner_or_url, file_id=None, raw=False):
         raise exceptions.PlotlyError(
             "The 'file_id' argument must be a non-negative number."
         )
-    response = requests.get(plotly_rest_url + resource,
+    response = http_requests.get(plotly_rest_url + resource,
                             headers=headers,
                             verify=get_config()['plotly_ssl_verification'])
     if response.status_code == 200:
@@ -651,7 +651,7 @@ class image:
             payload['scale'] = scale
         url = _api_v2.api_url('images/')
 
-        res = requests.post(
+        res = http_requests.post(
             url, data=json.dumps(payload, cls=utils.PlotlyJSONEncoder),
             headers=headers, verify=get_config()['plotly_ssl_verification'],
         )
@@ -804,7 +804,7 @@ class file_ops:
 
         url = _api_v2.api_url('folders')
 
-        res = requests.post(url, data=payload, headers=_api_v2.headers(),
+        res = http_requests.post(url, data=payload, headers=_api_v2.headers(),
                             verify=get_config()['plotly_ssl_verification'])
 
         _api_v2.response_handler(res)
@@ -926,7 +926,7 @@ class grid_ops:
             payload['parent_path'] = parent_path
 
         upload_url = _api_v2.api_url('grids')
-        req = requests.post(upload_url, data=payload,
+        req = http_requests.post(upload_url, data=payload,
                             headers=_api_v2.headers(),
                             verify=get_config()['plotly_ssl_verification'])
 
@@ -1005,7 +1005,7 @@ class grid_ops:
 
         api_url = (_api_v2.api_url('grids') +
                    '/{grid_id}/col'.format(grid_id=grid_id))
-        res = requests.post(api_url, data=payload, headers=_api_v2.headers(),
+        res = http_requests.post(api_url, data=payload, headers=_api_v2.headers(),
                             verify=get_config()['plotly_ssl_verification'])
         res = _api_v2.response_handler(res)
 
@@ -1081,7 +1081,7 @@ class grid_ops:
 
         api_url = (_api_v2.api_url('grids') +
                    '/{grid_id}/row'.format(grid_id=grid_id))
-        res = requests.post(api_url, data=payload, headers=_api_v2.headers(),
+        res = http_requests.post(api_url, data=payload, headers=_api_v2.headers(),
                             verify=get_config()['plotly_ssl_verification'])
         _api_v2.response_handler(res)
 
@@ -1133,7 +1133,7 @@ class grid_ops:
         """
         grid_id = _api_v2.parse_grid_id_args(grid, grid_url)
         api_url = _api_v2.api_url('grids') + '/' + grid_id
-        res = requests.delete(api_url, headers=_api_v2.headers(),
+        res = http_requests.delete(api_url, headers=_api_v2.headers(),
                               verify=get_config()['plotly_ssl_verification'])
         _api_v2.response_handler(res)
 
@@ -1201,7 +1201,7 @@ class meta_ops:
 
         api_url = _api_v2.api_url('grids') + '/{grid_id}'.format(grid_id=grid_id)
 
-        res = requests.patch(api_url, data=payload, headers=_api_v2.headers(),
+        res = http_requests.patch(api_url, data=payload, headers=_api_v2.headers(),
                              verify=get_config()['plotly_ssl_verification'])
 
         return _api_v2.response_handler(res)
@@ -1257,7 +1257,7 @@ class _api_v2:
     def response_handler(cls, response):
         try:
             response.raise_for_status()
-        except requests.exceptions.HTTPError as requests_exception:
+        except http_requests.exceptions.HTTPError as requests_exception:
             if (response.status_code == 404 and
                     get_config()['plotly_api_domain']
                     != tools.get_config_defaults()['plotly_api_domain']):
@@ -1335,7 +1335,7 @@ def add_share_key_to_url(plot_url, attempt=0):
     file_id = urlsplit.path.split('/')[2]
 
     url = _api_v2.api_url("files/") + file_owner + ":" + file_id
-    new_response = requests.patch(url,
+    new_response = http_requests.patch(url,
                                   headers=_api_v2.headers(),
                                   data={"share_key_enabled":
                                         "True",
@@ -1355,7 +1355,7 @@ def add_share_key_to_url(plot_url, attempt=0):
     # check for access, and retry a couple of times if this is the case
     # https://github.com/plotly/streambed/issues/4089
     embed_url = plot_url.split('?')[0] + '.embed' + plot_url.split('?')[1]
-    access_res = requests.get(embed_url)
+    access_res = http_requests.get(embed_url)
     if access_res.status_code == 404:
         attempt += 1
         if attempt == 5:
@@ -1395,7 +1395,7 @@ def _send_to_plotly(figure, **plot_options):
 
     url = get_config()['plotly_domain'] + "/clientresp"
 
-    r = requests.post(url, data=payload,
+    r = http_requests.post(url, data=payload,
                       verify=get_config()['plotly_ssl_verification'])
     r.raise_for_status()
     r = json.loads(r.text)
